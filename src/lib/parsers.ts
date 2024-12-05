@@ -33,6 +33,11 @@ const parsers = {
   url: {
     parse: pass,
   },
+  boolean: {
+    parse(value: string): boolean {
+      return value === "true";
+    },
+  },
 };
 
 export default parsers;

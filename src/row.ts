@@ -50,11 +50,6 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
       return unwrapped as T;
     }
 
-    const parser = parsers[definition.type as keyof typeof parsers];
-    if (!parser) {
-      return unwrapped as T;
-    }
-
     if (
       definition.type === "array" &&
       definition.array_formula_type === "number"
@@ -64,6 +59,11 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
 
     if (definition.array_formula_type === "number") {
       return (unwrapped as string[]).map(parseFloat) as T;
+    }
+
+    const parser = parsers[definition.type as keyof typeof parsers];
+    if (!parser) {
+      return unwrapped as T;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

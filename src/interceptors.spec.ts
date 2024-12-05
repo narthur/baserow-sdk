@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { MAX_REQUESTS_COUNT, INTERVAL_MS, Interceptors } from "./interceptors";
+import { MAX_REQUESTS_COUNT, INTERVAL_MS, Interceptors } from "./interceptors.js";
 
 describe("Request Interceptor", () => {
   let interceptors: Interceptors;
@@ -33,7 +33,7 @@ describe("Request Interceptor", () => {
 
     Array.from({ length: MAX_REQUESTS_COUNT + 1 }, () =>
       interceptors.onResponse({} as any),
-    );
+    ).forEach(() => void 0);
 
     await Promise.all(promises);
   });

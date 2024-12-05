@@ -140,4 +140,43 @@ describe("Row", () => {
 
     expect(row.getField("the_field")).toBe(1);
   });
+
+  it("handles array field type", () => {
+    const row = new MyRow({
+      tableId: 1,
+      rowId: 2,
+      row: { id: 2, order: "1", the_field: ["1", "2", "3"] },
+      sdk: {} as any,
+      repository: {
+        tables: [
+          {
+            id: 1,
+            fields: [f({ name: "the_field", type: "array", array_formula_type: "number" })],
+          },
+        ],
+      } as any,
+    });
+
+    expect(row.getField("the_field")).toEqual([1, 2, 3]);
+  });
+
+  it("handles date field type", () => {
+    const dateStr = "2024-03-19T15:30:00.000Z";
+    const row = new MyRow({
+      tableId: 1,
+      rowId: 2,
+      row: { id: 2, order: "1", the_field: dateStr },
+      sdk: {} as any,
+      repository: {
+        tables: [
+          {
+            id: 1,
+            fields: [f({ name: "the_field", type: "date" })],
+          },
+        ],
+      } as any,
+    });
+
+    expect(row.getField("the_field")).toEqual(new Date(dateStr));
+  });
 });

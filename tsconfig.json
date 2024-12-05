@@ -15,5 +15,5 @@
     "noEmit": true,
     "outDir": null
   },
-  "exclude": ["./dist/**/*", ".baserowrc"]
+  "exclude": ["./dist/**/*", ".baserowrc", "__generated__"]
 }

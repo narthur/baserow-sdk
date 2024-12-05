@@ -54,8 +54,16 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
       return (unwrapped === "true") as T;
     }
 
+    if (definition?.type === "array" && definition?.array_formula_type === "number") {
+      return (unwrapped as string[]).map(parseFloat) as T;
+    }
+
     if (definition?.array_formula_type === "number") {
       return (unwrapped as string[]).map(parseFloat) as T;
+    }
+
+    if (definition?.type === "date") {
+      return new Date(unwrapped as string) as T;
     }
 
     return unwrapped as T;

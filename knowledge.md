@@ -36,6 +36,8 @@ To validate code changes, run `npm run validate`.
 - Moving from compile-time code generation to runtime field handling
 - Keep generated code minimal (types only)
 - Push field logic into base Row class
+  - Use test-driven development approach
+  - Write failing tests before implementing changes
 - Handle field validation/conversion in Factory/Repository layer
 
 ## Testing

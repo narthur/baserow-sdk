@@ -28,17 +28,20 @@ To validate code changes, run `npm run validate`.
   - codegen.ts: Handles table imports and overall code generation orchestration
   - Individual utilities handle specific generation tasks (types, getters, etc)
 - /src/: Core SDK implementation
-- Factory pattern for managing row instances
 - Repository pattern for data access
 
 ### Migration Goals
 
-- Moving from compile-time code generation to runtime field handling
-- Keep generated code minimal (types only)
-- Push field logic into base Row class
-  - Use test-driven development approach
-  - Write failing tests before implementing changes
-- Handle field validation/conversion in Factory/Repository layer
+- Moving field handling from compile-time to runtime
+  - Core goal is runtime flexibility over compile-time generation
+  - Field logic can live in Row, parsers, or other runtime locations
+  - Implementation location less important than runtime vs compile-time
+- Handle field validation/conversion in runtime layer
+- Factory pattern for managing row instances
+- Move field handling from compile-time code generation to runtime
+  - Reduce generated code to just types and interfaces
+  - Handle field parsing and validation at runtime
+- Handle field validation/conversion in runtime layer (Row/Factory/Repository)
 
 ## Testing
 
@@ -66,18 +69,16 @@ To validate code changes, run `npm run validate`.
 
 ## Field Types
 
-The Row class handles various field types with specific parsing logic:
-- number: Converts string to float
-- boolean: Converts "true" string to boolean
-- array: Handles array fields with numeric values
-- date: Converts to Date object
-- email: Passes through as string
-- url: Passes through as string
+Field type parsing is handled in two places:
+- src/lib/parsers.ts: Core parsing logic for each field type
+- Row class: Uses parsers to handle field type conversion
 
-To add support for a new field type:
-1. Add parser to src/lib/parsers.ts if needed
+When adding support for a new field type:
+1. Add parser to src/lib/parsers.ts
 2. Add test case to row.spec.ts
-3. Implement handling in Row.getField method
+3. Use parser in Row.getField method
+
+The Row class should delegate parsing to parsers.ts rather than implementing conversion logic directly. This keeps parsing logic centralized and consistent.
 
 ## Known Issues
 

@@ -2,7 +2,7 @@
 
 ## Validating Code
 
-To validate code changes, run `npm run validate`.
+To validate code changes, run `npm run validate`. This is the preferred command for checking code correctness - do not run `npm test` directly.
 
 ## Project Overview
 
@@ -30,6 +30,13 @@ To validate code changes, run `npm run validate`.
 - /src/: Core SDK implementation
 - Repository pattern for data access
 
+### Runtime vs Compile-time
+
+Core architectural principle: Favor runtime flexibility over specific implementation locations. When moving logic from compile-time to runtime:
+- Implementation can live in Row, parsers, or other runtime locations
+- Focus on runtime vs compile-time tradeoff, not specific runtime location
+- Choose runtime location based on separation of concerns, not migration goals
+
 ### Migration Goals
 
 - Moving field handling from compile-time to runtime
@@ -45,6 +52,7 @@ To validate code changes, run `npm run validate`.
 
 ## Testing
 
+- Use `npm run validate` to run tests and validate code
 - Use Vitest for unit tests
 - Mock HTTP requests in tests
 - Test error cases and edge cases

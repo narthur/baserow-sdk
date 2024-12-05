@@ -141,6 +141,25 @@ describe("Row", () => {
     expect(row.getField("the_field")).toBe(1);
   });
 
+  it("uses parsers for field types", () => {
+    const row = new MyRow({
+      tableId: 1,
+      rowId: 2,
+      row: { id: 2, order: "1", the_field: "2020-01-01" },
+      sdk: {} as any,
+      repository: {
+        tables: [
+          {
+            id: 1,
+            fields: [f({ name: "the_field", type: "date" })],
+          },
+        ],
+      } as any,
+    });
+
+    expect(row.getField("the_field")).toEqual(new Date("2020-01-01"));
+  });
+
   it("handles array field type", () => {
     const row = new MyRow({
       tableId: 1,

@@ -19,7 +19,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "checkTs": "tsc --noEmit",
-    "codegen:dev": "npm run build && ./baserow.js -d > out.txt"
+    "codegen:dev": "npm run build && ./baserow.js -d > out.txt",
+    "validate": "npm run checkTs && npm run lint && npm run test -- --run"
   },
   "keywords": [],
   "author": "",

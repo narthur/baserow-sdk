@@ -1,5 +1,9 @@
 # Baserow SDK
 
+## Validating Code
+
+To validate code changes, run `npm run validate`.
+
 ## Project Overview
 
 - TypeScript SDK for interacting with Baserow API

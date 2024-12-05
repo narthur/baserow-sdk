@@ -66,6 +66,10 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
       return new Date(unwrapped as string) as T;
     }
 
+    if (definition?.type === "email") {
+      return unwrapped as T;
+    }
+
     return unwrapped as T;
   }
 

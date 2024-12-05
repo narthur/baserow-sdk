@@ -179,4 +179,44 @@ describe("Row", () => {
 
     expect(row.getField("the_field")).toEqual(new Date(dateStr));
   });
+
+  it("handles email field type", () => {
+    const email = "test@example.com";
+    const row = new MyRow({
+      tableId: 1,
+      rowId: 2,
+      row: { id: 2, order: "1", the_field: email },
+      sdk: {} as any,
+      repository: {
+        tables: [
+          {
+            id: 1,
+            fields: [f({ name: "the_field", type: "email" })],
+          },
+        ],
+      } as any,
+    });
+
+    expect(row.getField("the_field")).toBe(email);
+  });
+
+  it("handles url field type", () => {
+    const url = "https://example.com";
+    const row = new MyRow({
+      tableId: 1,
+      rowId: 2,
+      row: { id: 2, order: "1", the_field: url },
+      sdk: {} as any,
+      repository: {
+        tables: [
+          {
+            id: 1,
+            fields: [f({ name: "the_field", type: "url" })],
+          },
+        ],
+      } as any,
+    });
+
+    expect(row.getField("the_field")).toBe(url);
+  });
 });

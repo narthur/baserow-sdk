@@ -1,7 +1,7 @@
 import { ListFieldsResponse } from "../index.js";
 import { getRawType } from "./getRawType.js";
 
-export default function makeType(fields: ListFieldsResponse): string {
+export default function makeFullRawType(fields: ListFieldsResponse): string {
   let typeDef = `{\n`;
 
   typeDef += '  "id": number;\n';

@@ -1,6 +1,6 @@
 import { BaserowSdk, ListFieldsResponse } from "./index.js";
 import fs from "fs";
-import makeType from "./codegen/makeType.js";
+import makeFullRawType from "./codegen/makeFullRawType.js";
 import makeModelMethods from "./codegen/makeModelMethods.js";
 import path from "path";
 import { getConfig } from "./getConfig.js";
@@ -51,7 +51,7 @@ export default async function main({
     const modelImports = isDev
       ? `import { BaserowSdk, Row, FieldValue } from '${__dirname}/index.js'`
       : "import { BaserowSdk, Row, FieldValue } from 'baserow-sdk'";
-    const typeDef = `export type ${tableName}RowType = ${makeType(fields)}
+    const typeDef = `export type ${tableName}RowType = ${makeFullRawType(fields)}
 
 ${modelImports}
 import { Repository } from "./Repository.js";

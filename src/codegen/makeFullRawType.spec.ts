@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
-import makeType from "./makeType.js";
+import makeFullRawType from "./makeFullRawType.js";
 import f from "../test/fixtures/fieldDefinition.js";
 
 describe("makeType", () => {
   it("returns string for type text", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "text",
         }),
@@ -15,7 +15,7 @@ describe("makeType", () => {
 
   it("returns number for type number", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "number",
         }),
@@ -25,7 +25,7 @@ describe("makeType", () => {
 
   it("returns string for type long text", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "long_text",
         }),
@@ -35,7 +35,7 @@ describe("makeType", () => {
 
   it("handles formula type string", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "text",
@@ -46,7 +46,7 @@ describe("makeType", () => {
 
   it("handles formula type number", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "number",
@@ -57,7 +57,7 @@ describe("makeType", () => {
 
   it("handles formula type boolean", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "boolean",
@@ -68,7 +68,7 @@ describe("makeType", () => {
 
   it("handles formula type array string", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "array",
@@ -80,7 +80,7 @@ describe("makeType", () => {
 
   it("handles formula type array number", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "array",
@@ -92,7 +92,7 @@ describe("makeType", () => {
 
   it("handles formula type array boolean", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "array",
@@ -104,7 +104,7 @@ describe("makeType", () => {
 
   it("quotes field names", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           name: "the_field_name",
         }),
@@ -114,7 +114,7 @@ describe("makeType", () => {
 
   it("used unknown for default type", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "fake_type",
         }),
@@ -124,7 +124,7 @@ describe("makeType", () => {
 
   it("uses default type for unknown formula type", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "fake_type",
@@ -135,7 +135,7 @@ describe("makeType", () => {
 
   it("uses default type for unknown array formula type", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "array",
@@ -147,7 +147,7 @@ describe("makeType", () => {
 
   it("handles rollup type number", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "rollup",
           formula_type: "number",
@@ -158,7 +158,7 @@ describe("makeType", () => {
 
   it("handles rollup type string", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "rollup",
           formula_type: "text",
@@ -169,7 +169,7 @@ describe("makeType", () => {
 
   it("handles formula type button", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "formula",
           formula_type: "button",
@@ -180,7 +180,7 @@ describe("makeType", () => {
 
   it("handles rollup type array string", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "rollup",
           formula_type: "array",
@@ -192,7 +192,7 @@ describe("makeType", () => {
 
   it("handles rollup type array number", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "rollup",
           formula_type: "array",
@@ -204,7 +204,7 @@ describe("makeType", () => {
 
   it("handles link row", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "link_row",
         }),
@@ -214,7 +214,7 @@ describe("makeType", () => {
 
   it("handles lookup type array number", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "lookup",
           formula_type: "array",
@@ -226,7 +226,7 @@ describe("makeType", () => {
 
   it("handles rollup type date", () => {
     expect(
-      makeType([
+      makeFullRawType([
         f({
           type: "rollup",
           formula_type: "date",
@@ -236,10 +236,10 @@ describe("makeType", () => {
   });
 
   it("includes id", () => {
-    expect(makeType([])).toContain("id");
+    expect(makeFullRawType([])).toContain("id");
   });
 
   it("includes order", () => {
-    expect(makeType([])).toContain("order");
+    expect(makeFullRawType([])).toContain("order");
   });
 });

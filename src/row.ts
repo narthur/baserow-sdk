@@ -1,6 +1,7 @@
 import { Factory } from "./factory.js";
 import { BaserowSdk, RowClass } from "./index.js";
 import { parseField } from "./lib/parseField.js";
+import { unwrapFieldValue } from "./lib/unwrapFieldValue.js";
 
 export type RowType = Record<string, unknown> & { id: number; order: string };
 export type RowOptions<T extends RowType, R extends Factory> = {
@@ -38,7 +39,7 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
   }
 
   public getField<T>(field: string): T {
-    const unwrapped = this.unwrap(this.row[field]);
+    const unwrapped = unwrapFieldValue(this.row[field]);
     const table = this.repository.tables.find((t) => t.id === this.tableId);
 
     if (!table) {
@@ -46,24 +47,12 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
     }
 
     const definition = table.fields.find((f) => f.name === field);
+
     if (!definition) {
       return unwrapped as T;
     }
 
     return parseField(definition, unwrapped) as T;
-  }
-
-  private unwrap(v: unknown): unknown {
-    const uw = (_v: unknown): unknown => {
-      const isWrapped = typeof _v === "object" && _v !== null && "value" in _v;
-      return isWrapped ? _v.value : _v;
-    };
-
-    if (Array.isArray(v)) {
-      return v.map(uw);
-    }
-
-    return uw(v);
   }
 
   protected async setField(field: string, value: unknown): Promise<void> {

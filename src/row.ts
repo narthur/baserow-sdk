@@ -38,7 +38,7 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
     return parseFloat(this.row.order);
   }
 
-  public getField<T>(field: string): T {
+  public getField<K extends keyof T>(field: K): T[K] {
     const unwrapped = unwrapFieldValue(this.row[field]);
     const table = this.repository.tables.find((t) => t.id === this.tableId);
 
@@ -49,10 +49,10 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
     const definition = table.fields.find((f) => f.name === field);
 
     if (!definition) {
-      return unwrapped as T;
+      return unwrapped as T[K];
     }
 
-    return parseField(definition, unwrapped) as T;
+    return parseField(definition, unwrapped) as T[K];
   }
 
   protected async setField(field: string, value: unknown): Promise<void> {

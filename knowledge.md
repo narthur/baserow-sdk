@@ -63,6 +63,9 @@ Key principles:
 - Generated code must provide type-safe, discoverable APIs
 - Field access should be explicit and type-safe
 - Runtime flexibility shouldn't compromise API usability
+- Prefer simple, type-safe APIs over complex patterns
+- Favor explicit getField/setField methods over property accessors
+- Focus on compile-time type safety within simple runtime patterns
 
 Generated code should be minimal while maintaining usability:
 

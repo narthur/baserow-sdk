@@ -86,7 +86,12 @@ When adding support for a new field type:
 2. Add test case to row.spec.ts
 3. Use parser in Row.getField method
 
-The Row class should delegate parsing to parsers.ts rather than implementing conversion logic directly. This keeps parsing logic centralized and consistent.
+The Row class should delegate parsing to parsers.ts rather than implementing conversion logic directly. This keeps parsing logic centralized and consistent. Avoid duplicating parsing logic across the codebase - all field type parsing should live in parsers.ts.
+
+When implementing parsers:
+- Favor simple unified interfaces over type-specific implementations
+- Avoid separate parsers per type when a single parser function can handle all cases
+- Consider the full field definition when parsing, not just individual values
 
 ## Known Issues
 

@@ -1,6 +1,6 @@
 import { Factory } from "./factory.js";
 import { BaserowSdk, RowClass } from "./index.js";
-import parsers from "./lib/parsers.js";
+import { parseField } from "./lib/parseField.js";
 
 export type RowType = Record<string, unknown> & { id: number; order: string };
 export type RowOptions<T extends RowType, R extends Factory> = {
@@ -50,24 +50,7 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
       return unwrapped as T;
     }
 
-    if (
-      definition.type === "array" &&
-      definition.array_formula_type === "number"
-    ) {
-      return (unwrapped as string[]).map(parseFloat) as T;
-    }
-
-    if (definition.array_formula_type === "number") {
-      return (unwrapped as string[]).map(parseFloat) as T;
-    }
-
-    const parser = parsers[definition.type as keyof typeof parsers];
-    if (!parser) {
-      return unwrapped as T;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return parser.parse(unwrapped as any) as T;
+    return parseField(definition, unwrapped) as T;
   }
 
   private unwrap(v: unknown): unknown {

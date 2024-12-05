@@ -1,5 +1,5 @@
 import { it, describe, expect } from "vitest";
-import parsers from "./parsers.js";
+import parsers from "./parseField.js";
 
 describe("parsers", () => {
   const tests: [keyof typeof parsers, any, unknown][] = [

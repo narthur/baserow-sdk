@@ -1,34 +1,45 @@
 import { it, describe, expect } from "vitest";
-import parsers from "./parseField.js";
+import { parseField } from "./parseField.js";
+import f from "../test/fixtures/fieldDefinition.js";
 
-describe("parsers", () => {
-  const tests: [keyof typeof parsers, any, unknown][] = [
-    ["number", "1", 1],
-    ["text", "val", "val"],
-    ["long_text", "val", "val"],
-    ["date", "2020-01-01", new Date("2020-01-01")],
-    ["email", "contact@example.com", "contact@example.com"],
-    ["password", null, false],
-    ["created_on", "2020-01-01", new Date("2020-01-01")],
-    ["url", "https://example.com", "https://example.com"],
-  ];
+describe("parseField", () => {
+  it("parses number fields", () => {
+    expect(parseField(f({ type: "number" }), "1")).toBe(1);
+  });
 
-  it.each(tests)(
-    "parses field of type %s value %j to %j",
-    (type, value, expected) => {
-      expect(parsers[type].parse(value)).toEqual(expected);
-    },
-  );
+  it("parses text fields", () => {
+    expect(parseField(f({ type: "text" }), "val")).toBe("val");
+  });
+
+  it("parses long text fields", () => {
+    expect(parseField(f({ type: "long_text" }), "val")).toBe("val");
+  });
+
+  it("parses date fields", () => {
+    expect(parseField(f({ type: "date" }), "2020-01-01")).toEqual(new Date("2020-01-01"));
+  });
+
+  it("parses email fields", () => {
+    expect(parseField(f({ type: "email" }), "contact@example.com")).toBe("contact@example.com");
+  });
+
+  it("parses password fields", () => {
+    expect(parseField(f({ type: "password" }), null)).toBe(false);
+  });
+
+  it("parses created_on fields", () => {
+    expect(parseField(f({ type: "created_on" }), "2020-01-01")).toEqual(new Date("2020-01-01"));
+  });
+
+  it("parses url fields", () => {
+    expect(parseField(f({ type: "url" }), "https://example.com")).toBe("https://example.com");
+  });
+
+  it("parses boolean fields", () => {
+    expect(parseField(f({ type: "boolean" }), "true")).toBe(true);
+  });
+
+  it("parses array fields with numbers", () => {
+    expect(parseField(f({ type: "array", array_formula_type: "number" }), ["1", "2"])).toEqual([1, 2]);
+  });
 });
-
-// TODO:
-// array
-// boolean
-// button
-// formula
-// link_row
-// lookup
-// rollup
-// single_select
-// url
-// uuid

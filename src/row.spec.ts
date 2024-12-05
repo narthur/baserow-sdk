@@ -102,4 +102,42 @@ describe("Row", () => {
 
     expect(row.getField("the_field")).toBe(1);
   });
+
+  it("handles boolean field type", () => {
+    const row = new MyRow({
+      tableId: 1,
+      rowId: 2,
+      row: { id: 2, order: "1", the_field: "true" },
+      sdk: {} as any,
+      repository: {
+        tables: [
+          {
+            id: 1,
+            fields: [f({ name: "the_field", type: "boolean" })],
+          },
+        ],
+      } as any,
+    });
+
+    expect(row.getField("the_field")).toBe(true);
+  });
+
+  it("handles numeric field type", () => {
+    const row = new MyRow({
+      tableId: 1,
+      rowId: 2,
+      row: { id: 2, order: "1", the_field: "1" },
+      sdk: {} as any,
+      repository: {
+        tables: [
+          {
+            id: 1,
+            fields: [f({ name: "the_field", type: "number" })],
+          },
+        ],
+      } as any,
+    });
+
+    expect(row.getField("the_field")).toBe(1);
+  });
 });

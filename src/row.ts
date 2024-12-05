@@ -50,6 +50,10 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
       return parseFloat(unwrapped as string) as T;
     }
 
+    if (definition?.type === "boolean") {
+      return (unwrapped === "true") as T;
+    }
+
     if (definition?.array_formula_type === "number") {
       return (unwrapped as string[]).map(parseFloat) as T;
     }

@@ -27,6 +27,13 @@
 - Factory pattern for managing row instances
 - Repository pattern for data access
 
+### Migration Goals
+
+- Moving from compile-time code generation to runtime field handling
+- Keep generated code minimal (types only)
+- Push field logic into base Row class
+- Handle field validation/conversion in Factory/Repository layer
+
 ## Testing
 
 - Use Vitest for unit tests

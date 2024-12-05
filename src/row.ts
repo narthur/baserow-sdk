@@ -1,5 +1,6 @@
 import { Factory } from "./factory.js";
 import { BaserowSdk, RowClass } from "./index.js";
+import parsers from "./lib/parsers.js";
 
 export type RowType = Record<string, unknown> & { id: number; order: string };
 export type RowOptions<T extends RowType, R extends Factory> = {
@@ -45,32 +46,28 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
     }
 
     const definition = table.fields.find((f) => f.name === field);
-
-    if (definition?.type === "number") {
-      return parseFloat(unwrapped as string) as T;
-    }
-
-    if (definition?.type === "boolean") {
-      return (unwrapped === "true") as T;
-    }
-
-    if (definition?.type === "array" && definition?.array_formula_type === "number") {
-      return (unwrapped as string[]).map(parseFloat) as T;
-    }
-
-    if (definition?.array_formula_type === "number") {
-      return (unwrapped as string[]).map(parseFloat) as T;
-    }
-
-    if (definition?.type === "date") {
-      return new Date(unwrapped as string) as T;
-    }
-
-    if (definition?.type === "email") {
+    if (!definition) {
       return unwrapped as T;
     }
 
-    return unwrapped as T;
+    const parser = parsers[definition.type as keyof typeof parsers];
+    if (!parser) {
+      return unwrapped as T;
+    }
+
+    if (
+      definition.type === "array" &&
+      definition.array_formula_type === "number"
+    ) {
+      return (unwrapped as string[]).map(parseFloat) as T;
+    }
+
+    if (definition.array_formula_type === "number") {
+      return (unwrapped as string[]).map(parseFloat) as T;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return parser.parse(unwrapped as any) as T;
   }
 
   private unwrap(v: unknown): unknown {

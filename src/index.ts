@@ -51,6 +51,8 @@ export type FieldDefinition = {
   link_row_table_id?: number;
   link_row_related_field_id?: number;
   select_options?: { id: number; value: string; color: string }[];
+  through_field_id?: number;
+  target_field_id?: number;
 };
 
 export type ListFieldsResponse = Array<FieldDefinition>;

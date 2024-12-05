@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import makeType from "./makeType";
-import f from "../test/fixtures/fieldDefinition";
+import makeType from "./makeType.js";
+import f from "../test/fixtures/fieldDefinition.js";
 
 describe("makeType", () => {
   it("returns string for type text", () => {
@@ -75,7 +75,7 @@ describe("makeType", () => {
           array_formula_type: "text",
         }),
       ]),
-    ).toContain("FieldValue<string>[]");
+    ).toContain("(string)[]");
   });
 
   it("handles formula type array number", () => {
@@ -87,7 +87,7 @@ describe("makeType", () => {
           array_formula_type: "number",
         }),
       ]),
-    ).toContain("FieldValue<number | string>[]");
+    ).toContain("(number | string)[]");
   });
 
   it("handles formula type array boolean", () => {
@@ -99,7 +99,7 @@ describe("makeType", () => {
           array_formula_type: "boolean",
         }),
       ]),
-    ).toContain("FieldValue<boolean>[]");
+    ).toContain("(boolean)[]");
   });
 
   it("quotes field names", () => {
@@ -187,7 +187,7 @@ describe("makeType", () => {
           array_formula_type: "text",
         }),
       ]),
-    ).toContain("FieldValue<string>[]");
+    ).toContain("(string)[]");
   });
 
   it("handles rollup type array number", () => {
@@ -199,7 +199,7 @@ describe("makeType", () => {
           array_formula_type: "number",
         }),
       ]),
-    ).toContain("FieldValue<number | string>[]");
+    ).toContain("(number | string)[]");
   });
 
   it("handles link row", () => {
@@ -221,7 +221,7 @@ describe("makeType", () => {
           array_formula_type: "number",
         }),
       ]),
-    ).toContain("FieldValue<number | string>[]");
+    ).toContain("(number | string)[]");
   });
 
   it("handles rollup type date", () => {

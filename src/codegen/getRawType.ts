@@ -1,15 +1,19 @@
 import { FieldDefinition } from "../index.js";
 import { mapPrimitive } from "./mapPrimitive.js";
 
-export function getRawType(field: FieldDefinition): string {
+export function getRawType(
+  field: FieldDefinition,
+  { unwrap }: { unwrap?: boolean } = {},
+): string {
   if (field.type === "link_row") {
+    if (unwrap) return "string[]";
     return '{ "id": number, "value": string }[]';
   }
 
   if (["rollup", "formula", "lookup"].includes(field.type)) {
     switch (field.formula_type) {
       case "array":
-        return `FieldValue<${mapPrimitive(field.array_formula_type)}>[]`;
+        return `(${mapPrimitive(field.array_formula_type)})[]`;
       default:
         return mapPrimitive(field.formula_type);
     }
@@ -24,11 +28,12 @@ export function getRawType(field: FieldDefinition): string {
 
     const options = field.select_options
       .map((option) => {
+        if (unwrap) return `"${option.value}"`;
         return `{ id: ${option.id}, value: "${option.value}", color: "${option.color}" }`;
       })
       .join(" | ");
 
-    return `(${options})`;
+    return `(${options} | undefined)`;
   }
 
   return mapPrimitive(field.type);

@@ -1,9 +1,16 @@
 import { BaserowConfig, getConfig } from "./getConfig.js";
-import { BaserowSdk, RowClass } from "./index.js";
+import { BaserowSdk, ListFieldsResponse, RowClass } from "./index.js";
 import { Row, RowType } from "./row.js";
+import fs from "fs";
 
+type TableDefinition = {
+  id: number;
+  name: string;
+  fields: ListFieldsResponse;
+};
 export class Factory {
   public readonly config: BaserowConfig;
+  public readonly tables: TableDefinition[];
 
   protected sdk: BaserowSdk;
   protected classes: Map<number, RowClass<RowType, Factory>> = new Map();
@@ -14,6 +21,9 @@ export class Factory {
       throw new Error("Missing database token in configuration");
     }
     this.sdk = new BaserowSdk(this.config.databaseToken);
+    this.tables = JSON.parse(
+      fs.readFileSync(`${this.config.outDir}/tables.json`, "utf-8"),
+    ) as TableDefinition[];
   }
 
   protected registerRowClass<T extends RowType, R extends Factory>(

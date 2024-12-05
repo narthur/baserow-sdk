@@ -7,7 +7,7 @@ function run(fields: ListFieldsResponse = []): string {
   return makeModelMethods(1, [{ id: 1, name: "the_table_name", fields }]);
 }
 
-describe("makeClassMethods", () => {
+describe("makeModelMethods", () => {
   it("returns empty string for empty fields", () => {
     expect(run()).toBe("");
   });
@@ -179,17 +179,5 @@ describe("makeClassMethods", () => {
         }),
       ]),
     ).toContain("Date");
-  });
-
-  it("return single select value", () => {
-    expect(
-      run([
-        f({
-          name: "the_field_name",
-          type: "single_select",
-          select_options: [{ id: 1, value: "option_1", color: "red" }],
-        }),
-      ]),
-    ).toContain(".value");
   });
 });

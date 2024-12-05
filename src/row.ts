@@ -37,7 +37,37 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
   }
 
   public getField<T>(field: string): T {
-    return this.row[field] as T;
+    const unwrapped = this.unwrap(this.row[field]);
+    const table = this.repository.tables.find((t) => t.id === this.tableId);
+
+    if (!table) {
+      throw new Error("Table not found");
+    }
+
+    const definition = table.fields.find((f) => f.name === field);
+
+    if (definition?.type === "number") {
+      return parseFloat(unwrapped as string) as T;
+    }
+
+    if (definition?.array_formula_type === "number") {
+      return (unwrapped as string[]).map(parseFloat) as T;
+    }
+
+    return unwrapped as T;
+  }
+
+  private unwrap(v: unknown): unknown {
+    const uw = (_v: unknown): unknown => {
+      const isWrapped = typeof _v === "object" && _v !== null && "value" in _v;
+      return isWrapped ? _v.value : _v;
+    };
+
+    if (Array.isArray(v)) {
+      return v.map(uw);
+    }
+
+    return uw(v);
   }
 
   protected async setField(field: string, value: unknown): Promise<void> {

@@ -37,6 +37,8 @@ export default async function main({
     }),
   );
 
+  fs.writeFileSync(`${outDir}/tables.json`, JSON.stringify(tables, null, 2));
+
   tables.map((table) => {
     if (isDev) console.dir(table, { depth: null });
     const tableName = table.name;

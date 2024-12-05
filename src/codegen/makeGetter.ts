@@ -32,28 +32,60 @@ function getReturnType(field: FieldDefinition, tables: Table[]): string {
         `Field ${field.name} is a single_select but has no select_options`,
       );
     }
-    return field.select_options
-      ?.map((option) => `"${option.value}"`)
-      .join(" | ");
+    const options = [
+      ...field.select_options.map((option) => `"${option.value}"`),
+      "undefined",
+    ];
+    return options.join(" | ");
   }
 
   if (field.type === "number" || field.formula_type === "number") {
     return "number";
   }
 
+  if (field.type === "lookup" && field.formula_type === "array") {
+    const allFields = tables.flatMap((t) => t.fields);
+    const foreignField = allFields.find((f) => f.id === field.target_field_id);
+
+    if (!foreignField) {
+      throw new Error("foreignField not found");
+    }
+
+    return `(${getReturnType(foreignField, tables)})[]`.replace(
+      " | undefined",
+      "",
+    );
+  }
+
   return getRawType(field);
 }
 
 function getBody(field: FieldDefinition, tables: Table[]): string {
-  const rawType = getRawType(field);
+  const rawType = getRawType(field, { unwrap: true });
   const query = `this.getField<${rawType}>("${field.name}")`;
 
   if (field.type === "number" || field.formula_type === "number") {
     return `return parseFloat(String(${query}));`;
   }
 
-  if (field.type === "single_select") {
-    return `return ${query}.value;`;
+  if (field.array_formula_type === "number") {
+    return `return ${query}.map((v) => parseFloat(String(v)));`;
+  }
+
+  if (field.type === "lookup" && field.formula_type === "array") {
+    const allFields = tables.flatMap((t) => t.fields);
+    const foreignField = allFields.find((f) => f.id === field.target_field_id);
+
+    if (!foreignField) {
+      throw new Error("foreignField not found");
+    }
+
+    const rt = `(${getRawType(foreignField, { unwrap: true })})[]`.replace(
+      " | undefined",
+      "",
+    );
+
+    return `return this.getField<${rt}>("${field.name}")`;
   }
 
   if (field.type === "link_row") {

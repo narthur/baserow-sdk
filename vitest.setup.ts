@@ -10,3 +10,8 @@ vi.mock("./src/getConfig", () => ({
     config: "the_config",
   })),
 }));
+vi.mock("fs", () => ({
+  default: {
+    readFileSync: vi.fn(() => "{}"),
+  },
+}));

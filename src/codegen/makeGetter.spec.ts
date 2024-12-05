@@ -63,19 +63,6 @@ describe("makeGetter", () => {
             value: "the_option_name",
             color: "red",
           },
-        ],
-      },
-      `<({ id: 1, value: "the_option_name", color: "red" })>`,
-    ],
-    [
-      {
-        type: "single_select",
-        select_options: [
-          {
-            id: 1,
-            value: "the_option_name",
-            color: "red",
-          },
           {
             id: 2,
             value: "the_option_name_2",
@@ -83,7 +70,7 @@ describe("makeGetter", () => {
           },
         ],
       },
-      `<({ id: 1, value: "the_option_name", color: "red" } | { id: 2, value: "the_option_name_2", color: "blue" })>`,
+      `"the_option_name" | "the_option_name_2"`,
     ],
     [{ type: "number" }, `: number {`],
     [
@@ -124,5 +111,95 @@ describe("makeGetter", () => {
     ],
   ])("%s => `%s`", (field, expected) => {
     expect(run(field)).toContain(expected);
+  });
+
+  it("handles lookup type array single_select", () => {
+    expect(
+      makeGetter(
+        f({
+          type: "lookup",
+          formula_type: "array",
+          array_formula_type: "single_select",
+          target_field_id: 4,
+        }),
+        [
+          {
+            id: 3,
+            name: "table_name",
+            fields: [
+              f({
+                id: 4,
+                type: "single_select",
+                select_options: [
+                  {
+                    id: 1,
+                    value: "the_option_name",
+                    color: "red",
+                  },
+                ],
+              }),
+            ],
+          },
+        ],
+      ),
+    ).toContain("the_option_name");
+  });
+
+  it("returns lookup array as arrays", () => {
+    expect(
+      makeGetter(
+        f({
+          type: "lookup",
+          formula_type: "array",
+          array_formula_type: "single_select",
+          target_field_id: 4,
+        }),
+        [
+          {
+            id: 3,
+            name: "table_name",
+            fields: [
+              f({
+                id: 4,
+                type: "single_select",
+                select_options: [
+                  {
+                    id: 1,
+                    value: "the_option_name",
+                    color: "red",
+                  },
+                ],
+              }),
+            ],
+          },
+        ],
+      ),
+    ).toContain('("the_option_name")[]');
+  });
+
+  it("includes undefined in type for single_select", () => {
+    expect(
+      run({
+        type: "single_select",
+        select_options: [
+          {
+            id: 1,
+            value: "the_option_name",
+            color: "red",
+          },
+        ],
+      }),
+    ).toContain("| undefined");
+  });
+
+  it("coerces number for lookup array number", () => {
+    expect(
+      run({
+        type: "lookup",
+        formula_type: "array",
+        array_formula_type: "number",
+        target_field_id: 2,
+      }),
+    ).toContain("parseFloat");
   });
 });

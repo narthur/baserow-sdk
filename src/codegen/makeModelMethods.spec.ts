@@ -77,17 +77,6 @@ describe("makeModelMethods", () => {
     ).toContain("value: string");
   });
 
-  it("uses mapped type for getField generic", () => {
-    expect(
-      run([
-        f({
-          name: "the_field_name",
-          type: "text",
-        }),
-      ]),
-    ).toContain("<string>");
-  });
-
   it("handles emoji field name", () => {
     expect(
       run([

@@ -62,7 +62,7 @@ function getReturnType(field: FieldDefinition, tables: Table[]): string {
 
 function getBody(field: FieldDefinition, tables: Table[]): string {
   const rawType = getRawType(field, { unwrap: true });
-  const query = `this.getField<${rawType}>("${field.name}")`;
+  const query = `this.getField("${field.name}")`;
 
   if (field.type === "number" || field.formula_type === "number") {
     return `return parseFloat(String(${query}));`;
@@ -85,7 +85,7 @@ function getBody(field: FieldDefinition, tables: Table[]): string {
       "",
     );
 
-    return `return this.getField<${rt}>("${field.name}")`;
+    return `return this.getField("${field.name}")`;
   }
 
   if (field.type === "link_row") {

@@ -55,8 +55,11 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
     return parseField(definition, unwrapped) as T[K];
   }
 
-  protected async setField(field: string, value: unknown): Promise<void> {
-    (this.row as RowType)[field] = value;
+  protected async setField<K extends keyof T>(
+    field: K,
+    value: T[K],
+  ): Promise<void> {
+    this.row[field] = value;
     await this.sdk.updateRow(this.tableId, this.rowId, {
       [field]: value,
     });

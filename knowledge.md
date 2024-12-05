@@ -64,6 +64,21 @@ To validate code changes, run `npm run validate`.
 - Adding API endpoints: Extend BaserowSdk class
 - Adding field types: Update getRawType.ts
 
+## Field Types
+
+The Row class handles various field types with specific parsing logic:
+- number: Converts string to float
+- boolean: Converts "true" string to boolean
+- array: Handles array fields with numeric values
+- date: Converts to Date object
+- email: Passes through as string
+- url: Passes through as string
+
+To add support for a new field type:
+1. Add parser to src/lib/parsers.ts if needed
+2. Add test case to row.spec.ts
+3. Implement handling in Row.getField method
+
 ## Known Issues
 
 - None currently tracked

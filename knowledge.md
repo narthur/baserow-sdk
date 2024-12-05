@@ -21,6 +21,10 @@ To validate code changes, run `npm run validate`. This is the preferred command 
 - Validate numeric IDs with Number.isFinite()
 - Keep error messages concise and descriptive
 - Use TypeScript generics for type safety
+- Favor simple, direct solutions over clever ones
+- Prefer unified interfaces over type-specific implementations
+- Avoid separate parsers per type when a single parser function can handle all cases
+- Consider the full field definition when parsing, not just individual values
 
 ## Architecture
 

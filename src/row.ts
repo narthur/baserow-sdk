@@ -63,12 +63,11 @@ export class Row<
     return parseField(definition, unwrapped) as P[K];
   }
 
-  protected async setField<K extends keyof T>(
+  protected async setField<K extends keyof P>(
     field: K,
-    value: T[K],
+    value: P[K],
   ): Promise<void> {
-    this.row[field] = value;
-    await this.sdk.updateRow(this.tableId, this.rowId, {
+    this.row = await this.sdk.updateRow(this.tableId, this.rowId, {
       [field]: value,
     });
   }

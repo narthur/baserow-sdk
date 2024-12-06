@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from "vitest";
 import f from "./test/fixtures/fieldDefinition.js";
 
 class MyRow extends Row {
-  public async doSomething(): Promise<Row<RowType, Factory>[]> {
+  public async doSomething(): Promise<Row[]> {
     return this.getLinkedRows(1, "the_field", MyRow);
   }
 }

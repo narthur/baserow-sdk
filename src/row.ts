@@ -60,7 +60,7 @@ export class Row<
       return unwrapped as P[K];
     }
 
-    return parseField(definition, unwrapped) as P[K];
+    return parseField(definition, unwrapped, this) as P[K];
   }
 
   protected async setField<K extends keyof P>(
@@ -72,7 +72,7 @@ export class Row<
     });
   }
 
-  protected getLinkedRows<
+  public getLinkedRows<
     T extends Row,
     R extends RowType,
     P extends ParsedType,

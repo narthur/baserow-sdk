@@ -4,6 +4,10 @@ import { parseField } from "./lib/parseField.js";
 import { unwrapFieldValue } from "./lib/unwrapFieldValue.js";
 
 export type RowType = Record<string, unknown> & { id: number; order: string };
+export type ParsedType = Record<string, unknown> & {
+  id: number;
+  order: number;
+};
 export type RowOptions<T extends RowType, R extends Factory> = {
   tableId: number;
   rowId: number;
@@ -11,7 +15,11 @@ export type RowOptions<T extends RowType, R extends Factory> = {
   sdk: BaserowSdk;
   repository: R;
 };
-export class Row<T extends RowType = RowType, R extends Factory = Factory> {
+export class Row<
+  T extends RowType = RowType,
+  P extends ParsedType = ParsedType,
+  R extends Factory = Factory,
+> {
   protected tableId: number;
   protected rowId: number;
   protected row: T;
@@ -38,7 +46,7 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
     return parseFloat(this.row.order);
   }
 
-  public getField<K extends keyof T>(field: K): T[K] {
+  public getField<K extends keyof T & keyof P>(field: K): P[K] {
     const unwrapped = unwrapFieldValue(this.row[field]);
     const table = this.repository.tables.find((t) => t.id === this.tableId);
 
@@ -49,10 +57,10 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
     const definition = table.fields.find((f) => f.name === field);
 
     if (!definition) {
-      return unwrapped as T[K];
+      return unwrapped as P[K];
     }
 
-    return parseField(definition, unwrapped) as T[K];
+    return parseField(definition, unwrapped) as P[K];
   }
 
   protected async setField<K extends keyof T>(
@@ -65,10 +73,15 @@ export class Row<T extends RowType = RowType, R extends Factory = Factory> {
     });
   }
 
-  protected getLinkedRows<T extends Row, R extends RowType, F extends Factory>(
+  protected getLinkedRows<
+    T extends Row,
+    R extends RowType,
+    P extends ParsedType,
+    F extends Factory,
+  >(
     tableId: number,
     field: string,
-    defaultClass: RowClass<R, F>,
+    defaultClass: RowClass<R, P, F>,
   ): Promise<T[]> {
     return this.repository.getMany(tableId, defaultClass, {
       filters: {

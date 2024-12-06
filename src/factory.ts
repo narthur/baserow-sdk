@@ -1,6 +1,6 @@
 import { BaserowConfig, getConfig } from "./getConfig.js";
 import { BaserowSdk, ListFieldsResponse, RowClass } from "./index.js";
-import { Row, RowType } from "./row.js";
+import { ParsedType, Row, RowType } from "./row.js";
 import fs from "fs";
 
 type TableDefinition = {
@@ -13,7 +13,8 @@ export class Factory {
   public readonly tables: TableDefinition[];
 
   protected sdk: BaserowSdk;
-  protected classes: Map<number, RowClass<RowType, Factory>> = new Map();
+  protected classes: Map<number, RowClass<RowType, ParsedType, Factory>> =
+    new Map();
 
   constructor() {
     this.config = getConfig();
@@ -26,17 +27,23 @@ export class Factory {
     ) as TableDefinition[];
   }
 
-  protected registerRowClass<T extends RowType, R extends Factory>(
-    tableId: number,
-    rowClass: RowClass<T, R>,
-  ): void {
-    this.classes.set(tableId, rowClass as RowClass<RowType, Factory>);
+  protected registerRowClass<
+    R extends RowType,
+    P extends ParsedType,
+    F extends Factory,
+  >(tableId: number, rowClass: RowClass<R, P, F>): void {
+    this.classes.set(
+      tableId,
+      rowClass as RowClass<RowType, ParsedType, Factory>,
+    );
   }
 
-  protected getRowClass<T extends RowType, R extends Factory>(
-    tableId: number,
-  ): RowClass<T, R> | undefined {
-    return this.classes.get(tableId) as RowClass<T, R> | undefined;
+  protected getRowClass<
+    R extends RowType,
+    P extends ParsedType,
+    F extends Factory,
+  >(tableId: number): RowClass<R, P, F> | undefined {
+    return this.classes.get(tableId) as RowClass<R, P, F> | undefined;
   }
 
   private async getAll<R extends RowType>(
@@ -56,11 +63,12 @@ export class Factory {
     return this.getAll(tableId, { ...options, page: page + 1 }, accumulator);
   }
 
-  private createRows<T extends Row, R extends RowType, F extends Factory>(
-    tableId: number,
-    defaultClass: RowClass<R, F>,
-    rows: R[],
-  ): T[] {
+  private createRows<
+    T extends Row,
+    R extends RowType,
+    P extends ParsedType,
+    F extends Factory,
+  >(tableId: number, defaultClass: RowClass<R, P, F>, rows: R[]): T[] {
     const rowClass = this.getRowClass(tableId) || defaultClass;
     return rows.map(
       (row) =>
@@ -74,9 +82,14 @@ export class Factory {
     ) as T[];
   }
 
-  public async getMany<T extends Row, R extends RowType, F extends Factory>(
+  public async getMany<
+    T extends Row,
+    R extends RowType,
+    P extends ParsedType,
+    F extends Factory,
+  >(
     tableId: number,
-    defaultClass: RowClass<R, F>,
+    defaultClass: RowClass<R, P, F>,
     options: Record<string, unknown> = {},
   ): Promise<T[]> {
     const shouldGetAll = options.page === undefined;
